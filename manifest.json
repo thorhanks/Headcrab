@@ -1,0 +1,28 @@
+{
+	"name": "Headcrab",
+	"version": "0.1",
+	"manifest_version": 2,
+	"author": "Thor Hanks",
+	"description": "Extension containing various helpers for Jira focused on software developers.",
+
+	"permissions":
+	[
+		"clipboardWrite",
+		"*://jira/*"
+	],
+
+	"page_action":
+	{
+		"default_title": "Headcrab",
+		"default_popup": "popup.html"
+	},
+
+	"content_scripts":
+	[
+		{
+			"matches": ["*://jira/*"],
+			"css": ["jira/content.css"],
+			"js": ["jira/content.js"]
+		}
+	]
+}

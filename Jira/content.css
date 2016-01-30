@@ -1,0 +1,89 @@
+@keyframes commentInserted
+{
+	from { outline-color: initial; }
+	to { outline-color: initial; }
+}
+textarea.textarea#comment[name=comment]
+{
+	animation-duration: 0.01s;
+	animation-name: commentInserted;
+}
+
+@keyframes descriptionInserted
+{
+	from { outline-color: initial; }
+	to { outline-color: initial; }
+}
+textarea.textarea#description[name=description]
+{
+	animation-duration: 0.01s;
+	animation-name: descriptionInserted;
+}
+
+@keyframes ticketTopMenuInserted
+{
+	from { outline-color: initial; }
+	to { outline-color: initial; }
+}
+div.toolbar-split
+{
+	animation-duration: 0.01s;
+	animation-name: ticketTopMenuInserted;
+}
+
+@keyframes storyPointsPopUpInserted
+{
+	from { outline-color: initial; }
+	to { outline-color: initial; }
+}
+.content .field-group input#customfield_10000
+{
+	animation-duration: 0.01s;
+	animation-name: storyPointsPopUpInserted;
+}
+
+@keyframes storyPointsInlineInserted
+{
+	from { outline-color: initial; }
+	to { outline-color: initial; }
+}
+.inline-edit-fields .field-group input#customfield_10000
+{
+	animation-duration: 0.01s;
+	animation-name: storyPointsInlineInserted;
+}
+
+.headcrab.insertTemplate
+{
+	position: relative;
+	display: inline-block;
+	margin-bottom: 10px;
+}
+	.headcrab.insertTemplate ul
+	{
+		display: none;
+		position: absolute;
+		top: 30px;
+		left: 0;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.headcrab.insertTemplate.show ul
+	{
+		display: block;
+	}
+		.headcrab.insertTemplate.show ul li
+		{
+			padding: 5px 15px;
+			width: 200px;
+			background: #FFF;
+			color: #333;
+			cursor: pointer;
+			font-size: 13px;
+		}
+		.headcrab.insertTemplate.show ul li:hover
+		{
+			background: #3b73af;
+			color: #FFF;
+		}
