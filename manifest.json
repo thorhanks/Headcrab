@@ -3,7 +3,7 @@
 	"version": "0.1",
 	"manifest_version": 2,
 	"author": "Thor Hanks",
-	"description": "Extension containing various helpers for Jira focused on software developers.",
+	"description": "Chrome Extension attaching various helpers for software devs into Jira.",
 
 	"permissions":
 	[
@@ -11,10 +11,11 @@
 		"*://jira/*"
 	],
 
-	"page_action":
+	"icons":
 	{
-		"default_title": "Headcrab",
-		"default_popup": "popup.html"
+		"16": "Logo/Logo_16x16.png",
+		"48": "Logo/Logo_48x48.png",
+		"128": "Logo/Logo_128x128.png"
 	},
 
 	"content_scripts":
