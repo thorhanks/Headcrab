@@ -5,7 +5,7 @@ Chrome Extension that attaches a variety of helpful features to Jira. Headcrab i
 
 [Chrome Download Here (v1.0)](https://chrome.google.com/webstore/detail/headcrab/jnimolcmflanjdofadcbihecegjfljpi)
 
-[Firefox Download Here (v1.0](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
+[Firefox Download Here (v1.0)](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
 
 ## Features
 
