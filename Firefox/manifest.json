@@ -1,0 +1,33 @@
+{
+	"name": "Headcrab",
+	"version": "1.0",
+	"manifest_version": 2,
+	"description": "Extension attaching various helpers for software devs into Jira.",
+	
+	"applications":
+	{
+		"gecko":
+		{
+			"id": "headcrab@thorhanks.com"
+		}
+	},
+
+	"permissions":
+	[
+		"*://jira/*"
+	],
+
+	"icons":
+	{
+		"48": "icon.png"
+	},
+
+	"content_scripts":
+	[
+		{
+			"matches": ["*://jira/*"],
+			"css": ["Jira/content.css"],
+			"js": ["Jira/content.js"]
+		}
+	]
+}

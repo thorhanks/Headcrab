@@ -3,7 +3,8 @@
 # Headcrab
 Chrome Extension that attaches a variety of helpful features to Jira. Headcrab is geared toward making the day-to-day ticket edits faster and easier.
 
-[Download Here (v1.0)]()
+[Chrome Download Here (v1.0)]()
+[Firefox Download Here (v1.0](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
 
 ## Features
 
