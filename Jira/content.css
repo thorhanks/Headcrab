@@ -87,3 +87,8 @@ div.toolbar-split
 			background: #3b73af;
 			color: #FFF;
 		}
+.headcrab.insertGitLink
+{
+	display: inline-block;
+	margin-left: 10px;
+}

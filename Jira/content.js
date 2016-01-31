@@ -11,6 +11,7 @@
 				break;
 			case 'descriptionInserted':
 				insertTemplateUI(e, ["Epic", "Story", "Issue", "Bug", "Task", "Support"]);
+				insertGitLinkUI(e);
 				break;
 			case 'ticketTopMenuInserted':
 				insertTopMenuButtons();
@@ -48,8 +49,7 @@
 			"h3. {color:#357FC7}Acceptance Criteria{color}\n" + "- \n\n",
 		"Story":
 			"h3. {color:#357FC7}Acceptance Criteria{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Testing Requirements{color}\n" + "- \n\n" +
-			"*_Code Branch Name_*: [<mybranch>|https://github.com/mercent/mercent-main/commits/<mybranch>]",
+			"h3. {color:#357FC7}Testing Requirements{color}\n" + "- \n",
 		"Issue":
 			"h3. {color:#357FC7}Summary{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Impact (Affected Customers, Channels, etc){color}\n" + "- \n\n" +
@@ -57,18 +57,15 @@
 			"h3. {color:#357FC7}Troubleshooting Performed{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Expected Behavior{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Workarounds{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n\n" +
-			"*_Code Branch Name_*: [<mybranch>|https://github.com/mercent/mercent-main/commits/<mybranch>]",
+			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n",
 		"Bug":
 			"h3. {color:#357FC7}Summary{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Steps To Reproduce{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Expected Behavior{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Workarounds{color}\n" + "- \n\n" +
-			"*_Code Branch Name_*: [<mybranch>|https://github.com/mercent/mercent-main/commits/<mybranch>]",
+			"h3. {color:#357FC7}Workarounds{color}\n" + "- \n",
 		"Task":
 			"h3. {color:#357FC7}Acceptance Criteria{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Testing Requirements{color}\n" + "- \n\n" +
-			"*_Code Branch Name_*: [<mybranch>|https://github.com/mercent/mercent-main/commits/<mybranch>]",
+			"h3. {color:#357FC7}Testing Requirements{color}\n" + "- \n",
 		"Support":
 			"h3. {color:#357FC7}Summary{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Impact (Affected Customers, Channels, etc){color}\n" + "- \n\n" +
@@ -76,9 +73,35 @@
 			"h3. {color:#357FC7}Troubleshooting Performed{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Expected Behavior{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Workarounds{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n\n" +
-			"*_Code Branch Name_*: [<mybranch>|https://github.com/mercent/mercent-main/commits/<mybranch>]"
+			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n"
 	};
+
+	function insertGitLinkUI(e)
+	{
+		var target = e.target;
+		var frag = document.createDocumentFragment();
+
+		if(target.previousElementSibling && target.previousElementSibling.classList.contains("insertGitLink"))
+			return;
+
+		var container = document.createElement("div");
+		container.className = "headcrab insertGitLink";
+		frag.appendChild(container);
+
+		var button = document.createElement("a");
+		button.className = "aui-button";
+		container.appendChild(button);
+		button.addEventListener("click", function(e)
+		{
+			target.value = target.value + getGitBranchInfo();
+		});
+
+		var label = document.createElement("span");
+		label.appendChild(document.createTextNode("Insert Branch"));
+		button.appendChild(label);
+
+		target.parentNode.insertBefore(frag, e.target);
+	}
 
 	function insertTemplateUI(e, templateKeys)
 	{
@@ -137,18 +160,15 @@
 		ul.className = 'toolbar-group pluggable-ops headcrab';
 		ul.style.marginLeft = '30px';
 
-		var key = document.querySelector('meta[name=ajs-issue-key]').getAttribute('content');
-		var title = document.querySelector('h1#summary-val').textContent;
-		var labels = getLabelHashtags();
-		var issueType = document.querySelector('#build-status-panel').getAttribute('data-issue-type');
-
+		// COPY COMMIT MESSAGE
 		ul.appendChild(getTopMenuButton('Commit Msg', function(e)
 		{
+			var info = getPageInfo();
 			copyText(
-				key + ' ' + title + '\n\n' +
+				info.key + ' ' + info.title + '\n\n' +
 				'- \n\n' +
 				'----------------------------------------------------------------------\n' +
-				'/ #' + key + ', #' + issueType + labels);
+				'/ #' + info.key + ', #' + info.issueType + info.labels);
 
 			this.firstChild.style.width = this.firstChild.offsetWidth + 'px';
 			var span = this.querySelector('span');
@@ -157,16 +177,71 @@
 			setTimeout(function(){ span.textContent = 'Commit Msg'; span.style.color = ''; }, 600);
 		}));
 
-		var mailtoHref =
-			'mailto:?subject=' + encodeURIComponent('Code Review Request - ' + key) +
-			'&body=' + encodeURIComponent(
-				'Please code review the following ticket:\n\n' +
-				title + '\n' +
-				'http://jira/browse/' + key + '\n\n' +
-				'Thanks');
-		ul.appendChild(getTopMenuButton('Code Review Req', null, mailtoHref));
+		// CODE REVIEW REQUEST
+		ul.appendChild(getTopMenuButton('Code Review Req', function()
+		{
+			var info = getPageInfo();
+			window.open
+			(
+				'mailto:?subject=' + encodeURIComponent('Code Review Request: ' + info.key + ' ' + info.title) +
+				'&body=' + encodeURIComponent(
+					'Please code review the following ticket:\n\n' +
+					'http://jira/browse/' + info.key + '\n\n' +
+					'Thanks\n\n\n' +
+					'Title: ' + info.title + '\n' +
+					'Type: ' + info.issueType + '\n' +
+					'Status: ' + info.status + '\n' +
+					'Sprint: ' + info.sprint + '\n' +
+					'Priority: ' + info.priority + '\n\n' +
+					info.description),
+			'_blank');
+		}));
+
+		// EMAIL
+		ul.appendChild(getTopMenuButton('Email', function()
+		{
+			var info = getPageInfo();
+			window.open
+			(
+				'mailto:?subject=' + encodeURIComponent(info.key + ': ' + info.title) +
+				'&body=' + encodeURIComponent(
+					'\n\n\n' +
+					'http://jira/browse/' + info.key + '\n\n' +
+					'Title: ' + info.title + '\n' +
+					'Type: ' + info.issueType + '\n' +
+					'Status: ' + info.status + '\n' +
+					'Sprint: ' + info.sprint + '\n' +
+					'Priority: ' + info.priority + '\n\n' +
+					info.description),
+			'_blank');
+		}));
 
 		container.appendChild(ul);
+	}
+
+	function getPageInfo()
+	{
+		return {
+			key: document.querySelector('meta[name=ajs-issue-key]').getAttribute('content'),
+			title: document.querySelector('h1#summary-val').textContent.trim(),
+			labels: getLabelHashtags(),
+			status: document.querySelector('#status-val span').textContent.trim(),
+			sprint: document.querySelector('div.type-gh-sprint').textContent.trim(),
+			priority: document.querySelector('#priority-val img').getAttribute('alt'),
+			issueType: document.querySelector('#build-status-panel').getAttribute('data-issue-type'),
+			description: document.querySelector('#descriptionmodule #description-val .user-content-block').textContent.trim()
+		};
+	}
+
+	function getGitBranchInfo()
+	{
+		var branch = window.prompt('Branch Name:');
+		return '\n\n\\\\\n{panel:borderStyle=dashed|bgColor=#F0F3F7}\n' +
+			'[' + branch + '|https://github.com/mercent/mercent-main/tree/' + branch + ']\n' +
+			'Compare with [Dev|https://github.com/mercent/mercent-main/compare/dev...' + branch + '] / ' +
+			'[Release/Next|https://github.com/mercent/mercent-main/compare/release/next...' + branch + '] / ' +
+			'[Master|https://github.com/mercent/mercent-main/compare/master...' + branch + ']\n' +
+			'{panel}';
 	}
 
 	function insertStoryPointsPopUpUI(e)
@@ -249,7 +324,7 @@
 		return button;
 	}
 
-	function getTopMenuButton(label, onClick, href)
+	function getTopMenuButton(label, onClick)
 	{
 		var li = document.createElement('li');
 		li.className = 'toolbar-item';
@@ -258,7 +333,6 @@
 		var a = document.createElement('a');
 		a.className = 'toolbar-trigger';
 		li.appendChild(a);
-		if(href) a.href = href;
 
 		var span = document.createElement('span');
 		span.className = 'trigger-label';
