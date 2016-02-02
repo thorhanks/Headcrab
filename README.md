@@ -4,7 +4,8 @@
 Chrome Extension that attaches a variety of helpful features to Jira. Headcrab is geared toward making the day-to-day ticket edits faster and easier.
 
 [Chrome Download Here (v1.0)](https://chrome.google.com/webstore/detail/headcrab/jnimolcmflanjdofadcbihecegjfljpi)
-[Firefox Download Here (v1.0](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
+
+[Firefox Download Here (v1.0)](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
 
 ## Features
 
@@ -22,7 +23,8 @@ Chrome Extension that attaches a variety of helpful features to Jira. Headcrab i
 
 ### Commit Message
 - Appears along the top row of ticket actions
-- Copies to the clipboard a generated message for use as a code commit message 
+- Copies to the clipboard a generated message for use as a code commit message
+- NOT AVAILABLE in Firefox version
 
 ### Code Review Request Email
 - Generates an email with ticket details asking the recipient to please code review the ticket
