@@ -221,15 +221,23 @@
 
 	function getPageInfo()
 	{
+		var key = document.querySelector('meta[name=ajs-issue-key]');
+		var title = document.querySelector('h1#summary-val');
+		var status = document.querySelector('#status-val span');
+		var sprint = document.querySelector('div.type-gh-sprint');
+		var priority = document.querySelector('#priority-val img');
+		var issueType = document.querySelector('#build-status-panel');
+		var description = document.querySelector('#descriptionmodule #description-val .user-content-block');
+		
 		return {
-			key: document.querySelector('meta[name=ajs-issue-key]').getAttribute('content'),
-			title: document.querySelector('h1#summary-val').textContent.trim(),
+			key: (key) ? key.getAttribute('content') : '',
+			title: (title) ? title.textContent.trim() : '',
 			labels: getLabelHashtags(),
-			status: document.querySelector('#status-val span').textContent.trim(),
-			sprint: document.querySelector('div.type-gh-sprint').textContent.trim(),
-			priority: document.querySelector('#priority-val img').getAttribute('alt'),
-			issueType: document.querySelector('#build-status-panel').getAttribute('data-issue-type'),
-			description: document.querySelector('#descriptionmodule #description-val .user-content-block').textContent.trim()
+			status: (status) ? status.textContent.trim() : '',
+			sprint: (sprint) ? sprint.textContent.trim() : '',
+			priority: (priority) ? priority.getAttribute('alt') : '',
+			issueType: (issueType) ? issueType.getAttribute('data-issue-type') : '',
+			description: (description) ? description.textContent.trim() : ''
 		};
 	}
 
@@ -274,7 +282,7 @@
 		var target = document.querySelector('div#customfield_10000-val .save-options');
 		var input = document.querySelector('div#customfield_10000-val input#customfield_10000');
 
-		if(target.firstChild.classList.contains("headcrab"))
+		if(!target || !input || target.firstChild.classList.contains("headcrab"))
 			return;
 
 		var container = document.createElement('div');
