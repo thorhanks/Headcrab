@@ -1,11 +1,11 @@
 ![](http://i.imgur.com/H4M7Oyx.png)
 
 # Headcrab
-Chrome Extension that attaches a variety of helpful features to Jira. Headcrab is geared toward making the day-to-day ticket edits faster and easier.
+Extension that attaches a variety of helpful features to Jira. Headcrab is geared toward making the day-to-day ticket edits faster and easier.
 
-[Chrome Download Here (v1.0)](https://chrome.google.com/webstore/detail/headcrab/jnimolcmflanjdofadcbihecegjfljpi)
+[Chrome Download Here](https://chrome.google.com/webstore/detail/headcrab/jnimolcmflanjdofadcbihecegjfljpi)
 
-[Firefox Download Here (v1.0)](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
+[Firefox Download Here](https://addons.mozilla.org/en-US/firefox/addon/jiraheadcrab/)
 
 ## Features
 
@@ -40,4 +40,9 @@ Chrome Extension that attaches a variety of helpful features to Jira. Headcrab i
 
 ![](http://i.imgur.com/dpfi6G2.png)
 
-## Release Notes   
+## Release Notes
+#### 1.1
+- Fixed bug with email buttons by adding in null checks when pulling info from page.
+
+#### 1.0
+- Initial release
