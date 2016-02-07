@@ -10,11 +10,10 @@ module.exports = function(grunt)
 				[
 					// Chrome
 					{ src: ['Logo/*.png'], dest: 'publish/Chrome/', expand: true, flatten: true, filter: 'isFile' },
-					{ src: [ 'manifest.chrome.json'], dest: 'publish/Chrome/', expand: true, flatten: true, filter: 'isFile', rename: function(dest, src){ return dest + src.replace('chrome', ''); } },
-					{ src: ['*.pem'], dest: 'publish/Chrome/', expand: true, flatten: true, filter: 'isFile' },
+					{ src: [ 'manifest.chrome.json'], dest: 'publish/Chrome/', expand: true, flatten: true, filter: 'isFile', rename: function(dest, src){ return dest + src.replace('.chrome', ''); } },
 					// Firefox
 					{ src: [ 'Logo/Logo_128x128.png'], dest: 'publish/Firefox/', expand: true, flatten: true, filter: 'isFile', rename: function(dest, src){ return dest + src.replace('Logo_128x128', 'icon'); } },
-					{ src: [ 'manifest.firefox.json'], dest: 'publish/Firefox/', expand: true, flatten: true, filter: 'isFile', rename: function(dest, src){ return dest + src.replace('firefox', ''); } }
+					{ src: [ 'manifest.firefox.json'], dest: 'publish/Firefox/', expand: true, flatten: true, filter: 'isFile', rename: function(dest, src){ return dest + src.replace('.firefox', ''); } }
 				]
 			}
 		},
@@ -42,13 +41,15 @@ module.exports = function(grunt)
 		},
 		compress:
 		{
-			main:
+			chrome:
 			{
-				files:
-				[
-					{ src: ['publish/Chrome/*'], dest: 'publish/Chrome/Headcrab.zip', expand: true, flatten: true },
-					{ src: ['publish/Firefox/*'], dest: 'publish/Firefox/Headcrab.zip.xpi', expand: true, flatten: true }
-				]
+				options: { mode: 'zip', archive: 'publish/Chrome/Headcrab.zip' },
+				files: [{ src: ['publish/Chrome/*', '*.pem'], expand: true, flatten: true }]
+			},
+			firefox:
+			{
+				options: { mode: 'zip', archive: 'publish/Firefox/Headcrab.xpi' },
+				files: [{ src: ['publish/Firefox/*'], expand: true, flatten: true }]
 			}
 		}
 	});

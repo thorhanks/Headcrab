@@ -1,65 +1,65 @@
-@keyframes commentInserted
+@keyframes ext-headcrab-comment
 {
 	from { outline-color: initial; }
 	to { outline-color: initial; }
 }
-textarea.textarea#comment[name=comment]
+#jira .textarea#comment
 {
-	animation-duration: 0.01s;
-	animation-name: commentInserted;
+	animation-duration: 1ms;
+	animation-name: ext-headcrab-comment;
 }
 
-@keyframes descriptionInserted
+@keyframes ext-headcrab-description
 {
 	from { outline-color: initial; }
 	to { outline-color: initial; }
 }
-textarea.textarea#description[name=description]
+#jira .textarea#description
 {
-	animation-duration: 0.01s;
-	animation-name: descriptionInserted;
+	animation-duration: 1ms;
+	animation-name: ext-headcrab-description;
 }
 
-@keyframes ticketTopMenuInserted
+@keyframes ext-headcrab-ticket-top
 {
 	from { outline-color: initial; }
 	to { outline-color: initial; }
 }
-div.toolbar-split
+#jira div.toolbar-split
 {
-	animation-duration: 0.01s;
-	animation-name: ticketTopMenuInserted;
+	animation-duration: 1ms;
+	animation-name: ext-headcrab-ticket-top;
 }
 
-@keyframes storyPointsPopUpInserted
+@keyframes ext-headcrab-points-dialog
 {
 	from { outline-color: initial; }
 	to { outline-color: initial; }
 }
-.content .field-group input#customfield_10000
+#jira .content .field-group input#customfield_10000
 {
-	animation-duration: 0.01s;
-	animation-name: storyPointsPopUpInserted;
+	animation-duration: 1ms;
+	animation-name: ext-headcrab-points-dialog;
 }
 
-@keyframes storyPointsInlineInserted
+@keyframes ext-headcrab-points
 {
 	from { outline-color: initial; }
 	to { outline-color: initial; }
 }
-.inline-edit-fields .field-group input#customfield_10000
+#jira .inline-edit-fields .field-group input#customfield_10000
 {
-	animation-duration: 0.01s;
-	animation-name: storyPointsInlineInserted;
+	animation-duration: 1ms;
+	animation-name: ext-headcrab-points;
 }
 
-.headcrab.insertTemplate
+.ext-headcrab-insert-template
 {
 	position: relative;
 	display: inline-block;
 	margin-bottom: 10px;
 }
-	.headcrab.insertTemplate ul
+	.ext-headcrab-insert-template ul
 	{
 		display: none;
 		position: absolute;
@@ -69,11 +69,11 @@ div.toolbar-split
 		margin: 0;
 		padding: 0;
 	}
-	.headcrab.insertTemplate.show ul
+	.ext-headcrab-insert-template.show ul
 	{
 		display: block;
 	}
-		.headcrab.insertTemplate.show ul li
+		.ext-headcrab-insert-template.show ul li
 		{
 			padding: 5px 15px;
 			width: 200px;
@@ -82,12 +82,12 @@ div.toolbar-split
 			cursor: pointer;
 			font-size: 13px;
 		}
-		.headcrab.insertTemplate.show ul li:hover
+		.ext-headcrab-insert-template.show ul li:hover
 		{
 			background: #3b73af;
 			color: #FFF;
 		}
-.headcrab.insertGitLink
+.ext-headcrab-insert-git
 {
 	display: inline-block;
 	margin-left: 10px;

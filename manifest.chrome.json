@@ -13,17 +13,10 @@
 
 	"icons":
 	{
-		"16": "Logo/Logo_16x16.png",
-		"48": "Logo/Logo_48x48.png",
-		"128": "Logo/Logo_128x128.png"
+		"16": "Logo_16x16.png",
+		"48": "Logo_48x48.png",
+		"128": "Logo_128x128.png"
 	},
 
-	"content_scripts":
-	[
-		{
-			"matches": ["*://*/*"],
-			"css": ["jira/content.css"],
-			"js": ["jira/content.js"]
-		}
-	]
+	"content_scripts": [{ "matches": ["*://*/*"], "css": ["content.css"], "js": ["content.js"] }]
 }

@@ -1,29 +1,33 @@
 (function()
 {
-	insertTopMenuButtons();
-
-	document.addEventListener('animationstart', function(e)
+	// IF website has jira in url
+	if(window.location.href.includes('jira'))
 	{
-		switch(e.animationName)
+		insertTopMenuButtons();
+
+		document.addEventListener('animationstart', function(e)
 		{
-			case 'commentInserted':
-				insertTemplateUI(e, ["Ready for review", "Code review", "Patched to dev", "Merged to dev", "Merged to release/next"]);
-				break;
-			case 'descriptionInserted':
-				insertTemplateUI(e, ["Epic", "Story", "Issue", "Bug", "Task", "Support"]);
-				insertGitLinkUI(e);
-				break;
-			case 'ticketTopMenuInserted':
-				insertTopMenuButtons();
-				break;
-			case 'storyPointsPopUpInserted':
-				insertStoryPointsPopUpUI(e);
-				break;
-			case 'storyPointsInlineInserted':
-				insertStoryPointsInlineUI(e);
-				break;
-		}
-	});
+			switch(e.animationName)
+			{
+				case 'ext-headcrab-comment':
+					insertTemplateUI(e, ["Ready for review", "Code review", "Patched to dev", "Merged to dev", "Merged to release/next"]);
+					break;
+				case 'ext-headcrab-description':
+					insertTemplateUI(e, ["Epic", "Story", "Issue", "Bug", "Task", "Support"]);
+					insertGitLinkUI(e);
+					break;
+				case 'ext-headcrab-ticket-top':
+					insertTopMenuButtons();
+					break;
+				case 'ext-headcrab-points-dialog':
+					insertStoryPointsPopUpUI(e);
+					break;
+				case 'ext-headcrab-points':
+					insertStoryPointsInlineUI(e);
+					break;
+			}
+		});
+	}
 
 	var templates =
 	{
@@ -73,56 +77,71 @@
 			"h3. {color:#357FC7}Troubleshooting Performed{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Expected Behavior{color}\n" + "- \n\n" +
 			"h3. {color:#357FC7}Workarounds{color}\n" + "- \n\n" +
-			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n"
+			"h3. {color:#357FC7}Suggested Fix{color}\n" + "- \n",
+		"CommitMessage":
+			'{{key}} {{title}} \n\n' +
+			'- \n\n' +
+			'----------------------------------------------------------------------\n' +
+			'/ #{{key}}, #{{issueType}}{{labels}}',
+		"CodeReviewRequestSubject":
+			'Code Review Request: {{key}} {{title}}',
+		"CodeReviewRequestBody":
+			'Please code review the following ticket:\n\n' +
+			'{{ticketLink}}\n\n' +
+			'Thanks\n\n\n' +
+			'Title: {{title}}\n' +
+			'Type: {{issueType}}\n' +
+			'Status: {{status}}\n' +
+			'Sprint: {{sprint}}' +
+			'Priority: {{priority}}\n\n' +
+			'{{description}}',
+		"TicketEmailSubject":
+			'{{key}}: {{title}}',
+		"TicketEmailBody":
+			'\n\n\n' +
+			'{{ticketLink}}\n\n' +
+			'Title: {{title}}\n' +
+			'Type: {{issueType}}\n' +
+			'Status: {{status}}\n' +
+			'Sprint: {{sprint}}\n' +
+			'Priority: {{priority}}\n\n' +
+			'{{description}}'
 	};
 
 	function insertGitLinkUI(e)
 	{
 		var target = e.target;
-		var frag = document.createDocumentFragment();
 
-		if(target.previousElementSibling && target.previousElementSibling.classList.contains("insertGitLink"))
+		// IF we already inserted stuff don't do it again
+		if(!target || (target.previousElementSibling && target.previousElementSibling.classList.contains("ext-headcrab-insert-git")))
 			return;
 
 		var container = document.createElement("div");
-		container.className = "headcrab insertGitLink";
-		frag.appendChild(container);
-
-		var button = document.createElement("a");
-		button.className = "aui-button";
-		container.appendChild(button);
-		button.addEventListener("click", function(e)
+		container.className = "ext-headcrab-insert-git";
+		container.appendChild(getJiraLinkButton("Insert Branch", null, function(e)
 		{
 			target.value = target.value + getGitBranchInfo();
-		});
+		}));
 
-		var label = document.createElement("span");
-		label.appendChild(document.createTextNode("Insert Branch"));
-		button.appendChild(label);
-
-		target.parentNode.insertBefore(frag, e.target);
+		target.parentNode.insertBefore(container, e.target);
 	}
 
 	function insertTemplateUI(e, templateKeys)
 	{
 		var target = e.target;
-		var frag = document.createDocumentFragment();
 
-		if(target.previousElementSibling && target.previousElementSibling.classList.contains("headcrab"))
+		// IF we already inserted stuff don't do it again
+		if(!target || (target.previousElementSibling && target.previousElementSibling.classList.contains("ext-headcrab-insert-template")))
 			return;
 
 		var container = document.createElement("div");
-		container.className = "headcrab insertTemplate";
-		frag.appendChild(container);
+		container.className = "ext-headcrab-insert-template";
 
-		var button = document.createElement("a");
-		button.className = "aui-button";
+		var button = getJiraLinkButton("Insert Template", null, function(e)
+		{
+			container.classList.toggle("show");
+		});
 		container.appendChild(button);
-		button.addEventListener("click", function(e){ container.classList.toggle("show"); });
-
-		var label = document.createElement("span");
-		label.appendChild(document.createTextNode("Insert Template"));
-		button.appendChild(label);
 
 		var icon = document.createElement("span");
 		icon.className = "icon drop-menu";
@@ -132,6 +151,7 @@
 		menu.className = "ajs-layer box-shadow";
 		container.appendChild(menu);
 
+		// Add template items to menu
 		for(var i = 0, len = templateKeys.length; i < len; i++)
 		{
 			var item = document.createElement("li");
@@ -146,29 +166,31 @@
 			});
 		}
 
-		target.parentNode.insertBefore(frag, e.target);
+		target.parentNode.insertBefore(container, e.target);
 	}
 
 	function insertTopMenuButtons()
 	{
 		var container = document.querySelector('#opsbar-opsbar-transitions').parentNode;
 
-		if(container.querySelector(".headcrab"))
+		// IF we already inserted stuff don't do it again
+		if(!container || container.querySelector(".ext-headcrab-ticket-top"))
 			return;
 
 		var ul = document.createElement('ul');
-		ul.className = 'toolbar-group pluggable-ops headcrab';
+		ul.className = 'toolbar-group pluggable-ops ext-headcrab-ticket-top';
 		ul.style.marginLeft = '30px';
 
 		// COPY COMMIT MESSAGE
 		ul.appendChild(getTopMenuButton('Commit Msg', function(e)
 		{
 			var info = getPageInfo();
-			copyText(
-				info.key + ' ' + info.title + '\n\n' +
-				'- \n\n' +
-				'----------------------------------------------------------------------\n' +
-				'/ #' + info.key + ', #' + info.issueType + info.labels);
+			var message = templates.CommitMessage;
+			message = message.replace(/\{\{key\}\}/g, info.key);
+			message = message.replace(/\{\{title\}\}/g, info.title);
+			message = message.replace(/\{\{issueType\}\}/g, info.issueType);
+			message = message.replace(/\{\{labels\}\}/g, info.labels);
+			copyText(message);
 
 			this.firstChild.style.width = this.firstChild.offsetWidth + 'px';
 			var span = this.querySelector('span');
@@ -181,39 +203,36 @@
 		ul.appendChild(getTopMenuButton('Code Review Req', function()
 		{
 			var info = getPageInfo();
-			window.open
-			(
-				'mailto:?subject=' + encodeURIComponent('Code Review Request: ' + info.key + ' ' + info.title) +
-				'&body=' + encodeURIComponent(
-					'Please code review the following ticket:\n\n' +
-					'http://jira/browse/' + info.key + '\n\n' +
-					'Thanks\n\n\n' +
-					'Title: ' + info.title + '\n' +
-					'Type: ' + info.issueType + '\n' +
-					'Status: ' + info.status + '\n' +
-					'Sprint: ' + info.sprint + '\n' +
-					'Priority: ' + info.priority + '\n\n' +
-					info.description),
-			'_blank');
+			var subject = templates.CodeReviewRequestSubject;
+			subject = subject.replace(/\{\{key\}\}/g, info.key);
+			subject = subject.replace(/\{\{title\}\}/g, info.title);
+			var body = templates.CodeReviewRequestBody;
+			body = body.replace(/\{\{title\}\}/g, info.title);
+			body = body.replace(/\{\{issueType\}\}/g, info.issueType);
+			body = body.replace(/\{\{status\}\}/g, info.status);
+			body = body.replace(/\{\{sprint\}\}/g, info.sprint);
+			body = body.replace(/\{\{priority\}\}/g, info.priority);
+			body = body.replace(/\{\{description\}\}/g, info.description);
+			body = body.replace(/\{\{ticketLink\}\}/g, window.location.origin + window.location.pathname);
+			window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 		}));
 
 		// EMAIL
 		ul.appendChild(getTopMenuButton('Email', function()
 		{
 			var info = getPageInfo();
-			window.open
-			(
-				'mailto:?subject=' + encodeURIComponent(info.key + ': ' + info.title) +
-				'&body=' + encodeURIComponent(
-					'\n\n\n' +
-					'http://jira/browse/' + info.key + '\n\n' +
-					'Title: ' + info.title + '\n' +
-					'Type: ' + info.issueType + '\n' +
-					'Status: ' + info.status + '\n' +
-					'Sprint: ' + info.sprint + '\n' +
-					'Priority: ' + info.priority + '\n\n' +
-					info.description),
-			'_blank');
+			var subject = templates.TicketEmailSubject;
+			subject = subject.replace(/\{\{key\}\}/g, info.key);
+			subject = subject.replace(/\{\{title\}\}/g, info.title);
+			var body = templates.TicketEmailBody;
+			body = body.replace(/\{\{title\}\}/g, info.title);
+			body = body.replace(/\{\{issueType\}\}/g, info.issueType);
+			body = body.replace(/\{\{status\}\}/g, info.status);
+			body = body.replace(/\{\{sprint\}\}/g, info.sprint);
+			body = body.replace(/\{\{priority\}\}/g, info.priority);
+			body = body.replace(/\{\{description\}\}/g, info.description);
+			body = body.replace(/\{\{ticketLink\}\}/g, window.location.origin + window.location.pathname);
+			window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 		}));
 
 		container.appendChild(ul);
@@ -228,7 +247,7 @@
 		var priority = document.querySelector('#priority-val img');
 		var issueType = document.querySelector('#build-status-panel');
 		var description = document.querySelector('#descriptionmodule #description-val .user-content-block');
-		
+
 		return {
 			key: (key) ? key.getAttribute('content') : '',
 			title: (title) ? title.textContent.trim() : '',
@@ -256,7 +275,7 @@
 	{
 		var target = e.target;
 
-		if(target.nextElementSibling && target.nextElementSibling.classList.contains("headcrab"))
+		if(!target || (target.nextElementSibling && target.nextElementSibling.classList.contains("ext-headcrab-button")))
 			return;
 
 		var container = document.createElement('div');
@@ -267,11 +286,11 @@
 			return function(e) { target.value = value; };
 		};
 
-		container.appendChild(getButton('XL', getOnClick(32), 'first'));
-		container.appendChild(getButton('L', getOnClick(16), 'middle'));
-		container.appendChild(getButton('M', getOnClick(8), 'middle'));
-		container.appendChild(getButton('S', getOnClick(4), 'middle'));
-		container.appendChild(getButton('XS', getOnClick(2), 'last'));
+		container.appendChild(getPointsButton('XL', getOnClick(32), 'first'));
+		container.appendChild(getPointsButton('L', getOnClick(16), 'middle'));
+		container.appendChild(getPointsButton('M', getOnClick(8), 'middle'));
+		container.appendChild(getPointsButton('S', getOnClick(4), 'middle'));
+		container.appendChild(getPointsButton('XS', getOnClick(2), 'last'));
 
 		target.parentNode.insertBefore(container, e.target.nextElementSibling);
 		target.style.maxWidth = "100px";
@@ -282,7 +301,7 @@
 		var target = document.querySelector('div#customfield_10000-val .save-options');
 		var input = document.querySelector('div#customfield_10000-val input#customfield_10000');
 
-		if(!target || !input || target.firstChild.classList.contains("headcrab"))
+		if(!target || !input || target.firstChild.classList.contains("ext-headcrab-button"))
 			return;
 
 		var container = document.createElement('div');
@@ -294,11 +313,11 @@
 			return function(e) { input.value = value; };
 		};
 
-		container.appendChild(getButton('XL', getOnClick(32), 'first', true));
-		container.appendChild(getButton('L', getOnClick(16), 'middle', true));
-		container.appendChild(getButton('M', getOnClick(8), 'middle', true));
-		container.appendChild(getButton('S', getOnClick(4), 'middle', true));
-		container.appendChild(getButton('XS', getOnClick(2), 'last', true));
+		container.appendChild(getPointsButton('XL', getOnClick(32), 'first', true));
+		container.appendChild(getPointsButton('L', getOnClick(16), 'middle', true));
+		container.appendChild(getPointsButton('M', getOnClick(8), 'middle', true));
+		container.appendChild(getPointsButton('S', getOnClick(4), 'middle', true));
+		container.appendChild(getPointsButton('XS', getOnClick(2), 'last', true));
 
 		target.insertBefore(container, target.firstChild);
 	}
@@ -308,16 +327,21 @@
 		var elements = document.querySelectorAll('.labels-wrap .labels li');
 		var labels = '';
 
+		if(!elements) return labels;
+
 		for(var i=0, len=elements.length; i < len-1; i++)
-			labels += ', #' + elements[i].querySelector('span').textContent;
+		{
+			var span = elements[i].querySelector('span');
+			if(span) labels += ', #' + span.textContent;
+		}
 
 		return labels;
 	}
 
-	function getButton(label, onClick, position, asButton)
+	function getPointsButton(label, onClick, position, asButton)
 	{
 		var button = document.createElement(asButton ? 'button' : 'a');
-		button.className = "aui-button headcrab";
+		button.className = "aui-button ext-headcrab-button";
 		button.style.minWidth = '25px';
 
 		if(position != 'first') button.style.marginLeft = '-1px';
@@ -363,6 +387,20 @@
 		document.execCommand("copy", false, null);
 
 		document.body.removeChild(textarea);
+	}
+
+	function getJiraLinkButton(label, className, click, href, icon)
+	{
+		var a = document.createElement("a");
+		a.className = "aui-button " + className;
+		if(click) a.addEventListener("click", click);
+		if(href) a.href = href;
+
+		var span = document.createElement("span");
+		span.appendChild(document.createTextNode(label));
+		a.appendChild(span);
+
+		return a;
 	}
 
 })();

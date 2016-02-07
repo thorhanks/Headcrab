@@ -3,4 +3,4 @@
 @ECHO Install Node Packages and build output for
 @ECHO publishing extension.
 @ECHO -------------------------------------------
-npm install && npm run grunt
+(if exist .\publish RD /s /q .\publish) && npm install && npm run grunt
