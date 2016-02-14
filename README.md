@@ -17,14 +17,18 @@ Extension that attaches a variety of helpful features to Jira. Headcrab is geare
 
 ### Git Branch Links
 - Appears above all Description edit boxes
-- Asks you for the name of the branch and then inserts helpful links into the description
+- Provides a way for you to automatically insert useful git links
+- NOT AVAILABLE FOR FIREFOX :(
 
-![](http://i.imgur.com/CfevzH1.png) ![](http://i.imgur.com/0INse7E.png)
+![](http://i.imgur.com/CfevzH1.png)
+
+![](http://i.imgur.com/iPkQOlw.png)
+
+![](http://i.imgur.com/elX0jl4.png)
 
 ### Commit Message
 - Appears along the top row of ticket actions
 - Copies to the clipboard a generated message for use as a code commit message
-- NOT AVAILABLE in Firefox version
 
 ### Code Review Request Email
 - Generates an email with ticket details asking the recipient to please code review the ticket
