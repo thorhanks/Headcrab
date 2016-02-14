@@ -14,7 +14,7 @@
 					break;
 				case 'ext-headcrab-description':
 					insertTemplateUI(e, ["Epic", "Story", "Issue", "Bug", "Task", "Support"]);
-					insertGitLinkUI(e);
+					if(chrome.storage) insertGitLinkUI(e);
 					break;
 				case 'ext-headcrab-ticket-top':
 					insertTopMenuButtons();
@@ -120,7 +120,7 @@
 		container.className = "ext-headcrab-insert-git";
 		container.appendChild(getJiraLinkButton("Insert Branch", null, function(e)
 		{
-			target.value = target.value + getGitBranchInfo();
+			openGitDialog(target);
 		}));
 
 		target.parentNode.insertBefore(container, e.target);
@@ -171,7 +171,9 @@
 
 	function insertTopMenuButtons()
 	{
-		var container = document.querySelector('#opsbar-opsbar-transitions').parentNode;
+		var container = document.querySelector('#opsbar-opsbar-transitions');
+		if(!container) return;
+		container = container.parentNode;
 
 		// IF we already inserted stuff don't do it again
 		if(!container || container.querySelector(".ext-headcrab-ticket-top"))
@@ -260,15 +262,20 @@
 		};
 	}
 
-	function getGitBranchInfo()
+	function getGitBranchInfo(repo, branch, otherBranches)
 	{
-		var branch = window.prompt('Branch Name:');
-		return '\n\n\\\\\n{panel:borderStyle=dashed|bgColor=#F0F3F7}\n' +
-			'[' + branch + '|https://github.com/mercent/mercent-main/tree/' + branch + ']\n' +
-			'Compare with [Dev|https://github.com/mercent/mercent-main/compare/dev...' + branch + '] / ' +
-			'[Release/Next|https://github.com/mercent/mercent-main/compare/release/next...' + branch + '] / ' +
-			'[Master|https://github.com/mercent/mercent-main/compare/master...' + branch + ']\n' +
-			'{panel}';
+		var result = '\n\n\\\\\n{panel:borderStyle=dashed|bgColor=#F0F3F7}\n' +
+			'[' + branch + '|https://github.com/' + repo + '/tree/' + branch + ']\n';
+
+		if(otherBranches && otherBranches.length > 0)
+		{
+			result += 'Compare with ';
+			for(var i = 0, len = otherBranches.length; i < len; i++)
+				result += '[' + otherBranches[i] + '|https://github.com/' + repo + '/compare/' + otherBranches[i] + '...' + branch + '] / ';
+		}
+
+		result += '{panel}';
+		return result;
 	}
 
 	function insertStoryPointsPopUpUI(e)
@@ -403,4 +410,139 @@
 		return a;
 	}
 
+	function openGitDialog(input)
+	{
+		var blanket = getDomElement('div', 'ext-headcrab-git-dialog-blanket aui-blanket', null, null);
+		blanket.style.zIndex = '42000';
+
+		var dialog = buildGitDialog(blanket, input);
+
+		document.body.appendChild(blanket);
+		document.body.appendChild(dialog);
+	}
+
+	function buildGitDialog(blanket, input)
+	{
+		var container = getDomElement('div', 'jira-dialog box-shadow ext-headcrab-git-dialog', null, null);
+
+		var heading = getDomElement('div', 'jira-dialog-heading', null, container);
+		var h2 = getDomElement('h2', null, 'Add Git Branch Info', heading);
+
+		var content = getDomElement('div', 'jira-dialog-content', null, container);
+		var body = getDomElement('div', 'ext-headcrab-git-dialog-body', null, content);
+
+		getDomElement('div', null, '', body);
+
+		var branchInputContainer = getDomElement('div', 'ext-headcrab-git-dialog-branch', null, body);
+		getDomElement('span', null, 'Ticket branch name: ', branchInputContainer);
+		var branchInput = getDomElement('input', null, null, branchInputContainer);
+		branchInput.title = 'The name of the branch for this issue/ticket.';
+		branchInput.placeholder = 'Branch Name'; // TODO generate branch name
+
+		var repoInputContainer = getDomElement('div', 'ext-headcrab-git-dialog-repo', null, body);
+		getDomElement('span', null, 'Account/Repo: ', repoInputContainer);
+		var repoInput = getDomElement('input', null, null, repoInputContainer);
+		repoInput.title = 'The name of the account and repository.';
+		repoInput.placeholder = 'example/my-repo';
+
+		var listContainer = getDomElement('div', 'ext-headcrab-git-dialog-list', null, body);
+		var addInput = getDomElement('input', 'ext-headcrab-git-dialog-add-input', null, listContainer);
+		addInput.placeholder = 'Branch to compare to';
+		var add = getDomElement('a', 'aui-button', 'Add', listContainer, function(e)
+		{
+			listContainer.querySelector('ul').appendChild(getComparisonBranchListItem(addInput.value));
+			addInput.value = '';
+		});
+		addInput.addEventListener('keyup', function(e)
+		{
+			if(e.which == 13) add.click();
+		});
+		chrome.storage.sync.get('ComparisonBranches', function(data)
+		{
+			if(!data.ComparisonBranches) data.ComparisonBranches = { branches: [], repoName: '' };
+			repoInput.value = data.ComparisonBranches.repoName;
+			listContainer.appendChild(getComparisonBranchList(data.ComparisonBranches.branches));
+		});
+
+		var footer = getDomElement('div', 'buttons-container form-footer', null, content);
+		var buttons = getDomElement('div', 'buttons', null, footer);
+		var update = getDomElement('a', 'aui-button', 'Update', buttons, function(e)
+		{
+			var branches = getBranchNames(listContainer);
+			chrome.storage.sync.set({ ComparisonBranches: {'branches': branches.all, 'repoName': repoInput.value}});
+			input.value = input.value + getGitBranchInfo(repoInput.value, branchInput.value, branches.selected);
+			blanket.parentNode.removeChild(blanket);
+			container.parentNode.removeChild(container);
+		});
+		var cancel = getDomElement('a', 'cancel ext-headcrab-git-dialog-cancel', 'Cancel', buttons, function(e)
+		{
+			blanket.parentNode.removeChild(blanket);
+			container.parentNode.removeChild(container);
+		});
+
+		return container;
+	}
+
+	function getDomElement(tagName, className, content, parentNode, onClick)
+	{
+		var element = document.createElement(tagName);
+		if(className) element.className = className;
+		if(content) element.appendChild((typeof content == 'string') ? document.createTextNode(content) : content);
+		if(onClick) element.addEventListener('click', onClick);
+		if(parentNode) parentNode.appendChild(element);
+		return element;
+	}
+
+	function getComparisonBranchList(items)
+	{
+		var list = getDomElement('ul');
+
+		if(!items) return list;
+
+		for(var i = 0, len = items.length; i < len; i++)
+			list.appendChild(getComparisonBranchListItem(items[i]));
+
+		return list;
+	}
+
+	function getComparisonBranchListItem(item)
+	{
+		var li = getDomElement('li');
+		if(!item) return li;
+		item = item.trim();
+
+		var label = getDomElement('label', null, null, li);
+		var checkbox = getDomElement('input', null, null, label);
+		checkbox.checked = true;
+		checkbox.type = 'checkbox';
+		checkbox.setAttribute('data-branch-name', item);
+		getDomElement('span', null, item, label);
+		var remove = getDomElement('span', null, '\u00D7', li);
+		remove.addEventListener('click', function() { li.parentNode.removeChild(li); });
+
+		return li;
+	}
+
+	function getBranchNames(listContainer)
+	{
+		if(!listContainer) return { selected: [], all: [] };
+
+		var listElements = listContainer.querySelectorAll('li');
+		if(!listElements) return { selected: [], all: [] };
+
+		var selected = [];
+		var all = [];
+		for(var i = 0, len = listElements.length; i < len; i++)
+		{
+			var checkbox = listElements[i].querySelector('input');
+			if(checkbox)
+			{
+				var value = checkbox.getAttribute('data-branch-name');
+				if(checkbox.checked) selected.push(value);
+				all.push(value);
+			}
+		}
+
+		return { selected: selected, all: all };
+	}
 })();

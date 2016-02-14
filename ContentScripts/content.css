@@ -92,3 +92,96 @@
 	display: inline-block;
 	margin-left: 10px;
 }
+
+.ext-headcrab-git-dialog
+{
+	z-index: 42001 !important;
+	left: calc(50% - 250px) !important;
+	top: calc(50% - 200px) !important;
+}
+	.ext-headcrab-git-dialog-body
+	{
+		width: 458px;
+		height: 360px;
+		padding: 10px 20px;
+		overflow-y: auto;
+	}
+	.ext-headcrab-git-dialog-cancel
+	{
+		margin-left: 10px;
+		margin-right: 5px;
+		cursor: pointer;
+	}
+	.ext-headcrab-git-dialog-branch input,
+	.ext-headcrab-git-dialog-repo input,
+	.ext-headcrab-git-dialog-add-input
+	{
+		border-radius: 2px;
+		border: 1px solid lightgray;
+		padding: 3px 5px;
+	}
+	.ext-headcrab-git-dialog-branch
+	{
+		margin: 0 0 10px 0;
+	}
+		.ext-headcrab-git-dialog-branch input
+		{
+			width: 250px;
+		}
+	.ext-headcrab-git-dialog-repo
+	{}
+	.ext-headcrab-git-dialog-list
+	{
+		margin: 25px auto 0 auto;
+		border: 1px solid lightgray;
+		background: #F0F0F0;
+		padding: 8px 8px 2px 8px;
+		border-radius: 3px;
+		width: 400px;
+	}
+		.ext-headcrab-git-dialog-list a
+		{
+			border-radius: 0 2px 2px 0;
+			vertical-align: top;
+		}
+		.ext-headcrab-git-dialog-list ul
+		{
+			list-style: none;
+			padding: 0;
+			margin: 6px 0 0 0;
+		}
+			.ext-headcrab-git-dialog-list li
+			{
+				margin: 0 0 6px 0;
+			}
+			.ext-headcrab-git-dialog-list li input
+			{
+				margin: 0 5px 0 0;
+				vertical-align: middle;
+
+			}
+			.ext-headcrab-git-dialog-list li > label
+			{
+				padding: 0 7px 0 0;
+			}
+			.ext-headcrab-git-dialog-list li > span
+			{
+				color: #F0F0F0;
+				font-size: 20px;
+				vertical-align: middle;
+				cursor: pointer;
+			}
+			.ext-headcrab-git-dialog-list li:hover > span
+			{
+				color: red;
+				cursor: pointer;
+			}
+	.ext-headcrab-git-dialog-add-input
+	{
+		vertical-align: top;
+		box-sizing: border-box;
+		height: 30px;
+		border-radius: 2px 0 0 2px;
+		margin-right: -1px;
+		width: calc(100% - 47px)
+	}

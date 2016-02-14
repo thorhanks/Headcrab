@@ -6,7 +6,7 @@
 
 	"applications": { "gecko": { "id": "headcrab@thorhanks.com" } },
 
-	"permissions": ["*://*/*"],
+	"permissions": ["*://*/*", "storage"],
 
 	"icons": { "48": "icon.png" },
 
