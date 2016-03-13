@@ -45,6 +45,11 @@ Extension that attaches a variety of helpful features to Jira. Headcrab is geare
 ![](http://i.imgur.com/dpfi6G2.png)
 
 ## Release Notes
+#### 1.2
+- Now works with any page url that has 'jira' in it
+- Null reference bug fixes
+- New insert Git branch info functionality
+
 #### 1.1
 - Fixed bug with email buttons by adding in null checks when pulling info from page.
 
