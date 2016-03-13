@@ -22,7 +22,7 @@ Extension that attaches a variety of helpful features to Jira. Headcrab is geare
 
 ![](http://i.imgur.com/CfevzH1.png)
 
-![](http://i.imgur.com/iPkQOlw.png)
+![](http://i.imgur.com/dQcHPcY.png)
 
 ![](http://i.imgur.com/elX0jl4.png)
 
@@ -45,6 +45,10 @@ Extension that attaches a variety of helpful features to Jira. Headcrab is geare
 ![](http://i.imgur.com/dpfi6G2.png)
 
 ## Release Notes
+#### 1.3
+- Fixed issue with textbox wiki preview toggle inserting duplicate buttons
+- Added support for other git repo sources in insert branch dialog
+
 #### 1.2
 - Now works with any page url that has 'jira' in it
 - Null reference bug fixes
