@@ -53,6 +53,13 @@
 	animation-name: ext-headcrab-points;
 }
 
+
+.previewClass .ext-headcrab-insert-template,
+.previewClass .ext-headcrab-insert-git
+{
+	display: none;
+}
+
 .ext-headcrab-insert-template
 {
 	position: relative;
@@ -114,6 +121,7 @@
 	}
 	.ext-headcrab-git-dialog-branch input,
 	.ext-headcrab-git-dialog-repo input,
+	.ext-headcrab-git-dialog-url input,
 	.ext-headcrab-git-dialog-add-input
 	{
 		border-radius: 2px;
@@ -124,12 +132,11 @@
 	{
 		margin: 0 0 10px 0;
 	}
-		.ext-headcrab-git-dialog-branch input
+		.ext-headcrab-git-dialog-branch input,
+		.ext-headcrab-git-dialog-repo input
 		{
 			width: 250px;
 		}
-	.ext-headcrab-git-dialog-repo
-	{}
 	.ext-headcrab-git-dialog-list
 	{
 		margin: 25px auto 0 auto;

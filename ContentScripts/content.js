@@ -112,9 +112,7 @@
 	{
 		var target = e.target;
 
-		// IF we already inserted stuff don't do it again
-		if(!target || (target.previousElementSibling && target.previousElementSibling.classList.contains("ext-headcrab-insert-git")))
-			return;
+		if(elementExists(target, 'ext-headcrab-insert-git')) return;
 
 		var container = document.createElement("div");
 		container.className = "ext-headcrab-insert-git";
@@ -130,9 +128,7 @@
 	{
 		var target = e.target;
 
-		// IF we already inserted stuff don't do it again
-		if(!target || (target.previousElementSibling && target.previousElementSibling.classList.contains("ext-headcrab-insert-template")))
-			return;
+		if(elementExists(target, 'ext-headcrab-insert-template')) return;
 
 		var container = document.createElement("div");
 		container.className = "ext-headcrab-insert-template";
@@ -262,18 +258,28 @@
 		};
 	}
 
-	function getGitBranchInfo(repo, branch, otherBranches)
+	function getGitBranchInfo(provider, branch, otherBranches)
 	{
+		provider = (provider.indexOf('http') > -1) ? provider : 'http://'+provider;
+		provider = provider.replace(/\/$/, '');
+		var isGithub = (provider.indexOf('github') > -1);
+
 		var result = '\n\n\\\\\n{panel:borderStyle=dashed|bgColor=#F0F3F7}\n' +
-			'[' + branch + '|https://github.com/' + repo + '/tree/' + branch + ']\n';
+			'[' + branch + '|' + provider + '/tree/' + branch + ']\n';
 
 		if(otherBranches && otherBranches.length > 0)
 		{
 			result += 'Compare with ';
 			for(var i = 0, len = otherBranches.length; i < len; i++)
-				result += '[' + otherBranches[i] + '|https://github.com/' + repo + '/compare/' + otherBranches[i] + '...' + branch + '] / ';
+			{
+				if(isGithub)
+					result += '[' + otherBranches[i] + '|' + provider + '/compare/' + otherBranches[i] + '...' + branch + '] / ';
+				else
+					result += '[' + otherBranches[i] + '|' + provider + '/compare/' + encodeURIComponent(otherBranches[i]) + '...' + encodeURIComponent(branch) + '] / ';
+			}
 		}
 
+		result = result.replace(/\s\/\s$/, '');
 		result += '{panel}';
 		return result;
 	}
@@ -440,10 +446,10 @@
 		branchInput.placeholder = 'Branch Name'; // TODO generate branch name
 
 		var repoInputContainer = getDomElement('div', 'ext-headcrab-git-dialog-repo', null, body);
-		getDomElement('span', null, 'Account/Repo: ', repoInputContainer);
+		getDomElement('span', null, 'Account/Repo URL: ', repoInputContainer);
 		var repoInput = getDomElement('input', null, null, repoInputContainer);
-		repoInput.title = 'The name of the account and repository.';
-		repoInput.placeholder = 'example/my-repo';
+		repoInput.title = 'The base URL of the account and repository.';
+		repoInput.placeholder = 'github.com/my-account/my-repo';
 
 		var listContainer = getDomElement('div', 'ext-headcrab-git-dialog-list', null, body);
 		var addInput = getDomElement('input', 'ext-headcrab-git-dialog-add-input', null, listContainer);
@@ -544,5 +550,21 @@
 		}
 
 		return { selected: selected, all: all };
+	}
+
+	function elementExists(target, className)
+	{
+		if(target)
+		{
+			var parent = target.parentNode;
+			var childTarget = parent.querySelector('.' + className);
+			if(childTarget)
+				return true;
+
+			if(target.previousElementSibling && target.previousElementSibling.classList.contains(className))
+				return true;
+		}
+
+		return false;
 	}
 })();
