@@ -65,6 +65,7 @@
 	position: relative;
 	display: inline-block;
 	margin-bottom: 10px;
+    margin-top: 10px;
 }
 	.ext-headcrab-insert-template ul
 	{
@@ -98,6 +99,7 @@
 {
 	display: inline-block;
 	margin-left: 10px;
+    margin-top: 10px;
 }
 
 .ext-headcrab-git-dialog
