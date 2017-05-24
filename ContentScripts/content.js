@@ -37,19 +37,21 @@
 			"h5. New/Expected Behavior\n" + "- \n\n" +
 			"h5. Unsupported Scenarios or Known Issues\n" + "- \n\n" +
 			"h5. Developer Testing Performed\n" + "- \n\n" +
-            "h5. Learning Center Callouts\n" + "- \n\n" +
+			"h5. Learning Center Callouts\n" + "- \n\n" +
 			"h5. QA Testing Requested\n" + "- ",
 		"Code review":
 			"h3. {color:#357FC7}Code Reviewed{color}\n\n" +
 			"h5. Must-Fix\n" + "- \n\n" +
 			"h5. Suggestions or Comments\n" + "- ",
-		"Patched to dev":
-			"h3. {color:#357FC7}PATCHED{color}\n\nChanges have been patched into *DEV* environment.",
+		"Patched to DEV":
+			"h3. {color:#357FC7}PATCHED to DEV{color}\n\n",
+		"Patched to STG":
+			"h3. {color:#357FC7}PATCHED to STG{color}\n\n",
 		"Merged to dev":
-			"h3. {color:#357FC7}MERGED{color}\n\nChanges have been merged into the *DEV* code branch.",
+			"h3. {color:#357FC7}MERGED to dev{color}\n\n",
 		"Merged to release/next":
-			"h3. {color:#357FC7}MERGED{color}\n\nChanges have been merged into the *RELEASE/NEXT* code branch.",
-        "Learning Center Note":
+			"h3. {color:#357FC7}MERGED to release/next{color}\n\n",
+		"Learning Center Note":
 			"h3. {color:#357FC7}Note for Learning Center{color}\n\n",
 		"Epic":
 			"h3. {color:#357FC7}Goal{color}\n" + " \n\n" +
